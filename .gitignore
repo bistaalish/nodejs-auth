@@ -1,0 +1,11 @@
+#  Node js packages
+node_modules
+package-lock.json
+
+#Environment file
+.env
+
+# Logs
+.logs
+*.log*
+
