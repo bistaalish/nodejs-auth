@@ -8,8 +8,6 @@ A boilerplate for quickly setting up a Node.js application using Express, Mongoo
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Configuration](#configuration)
-- [Custom Error API](#custom-error-api)
 - [Contributing](#contributing)
 - [License](#license)
 
