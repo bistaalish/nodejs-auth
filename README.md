@@ -1,34 +1,66 @@
-# npm-express-boilerplate
-This is a boiler plate for node js api development.
-# NPM Expres boilerplate
+# Express Mongoose Custom Error API Boilerplate
 
-This is a boilerplate for developing RESTful API using node js, where Express, mongoose and Custom API Errors are already defined.
+A boilerplate for quickly setting up a Node.js application using Express, Mongoose, and a custom error handling API.
+
+## Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Custom Error API](#custom-error-api)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- Express.js for building RESTful APIs.
+- Mongoose for MongoDB database interaction.
+- Custom Error Handling middleware for consistent error responses.
+- Basic project structure to kickstart your Node.js project.
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- Node.js and npm installed on your machine.
+- MongoDB server up and running (locally or on a remote server).
+
 ## Installation
 
-- Install the Boilerplate using NPM:
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/express-mongoose-custom-error-api-boilerplate.git
+```
+
+2. Change into the project directory:
+
+```bash
+cd npm-express-boilerplate
+```
+
+3. Install the dependencies:
 
 ```bash
 npm install
 ```
-## Setup
-- Add an environment file .env and add MONGO_URI=[connectstring]
-
+  
 ## Usage
-- Start the boilerplate on port 3000.
+
+1. Copy .env.example to .env.
+2. Add connection string to .env in MONGO_URI.
+3. Start the server:
+
 ```bash
 npm start
 ```
+4. Your Express application will be running at `http://localhost:3000` by default.
+5. Begin building your API `routes` and `models` in the routes and models directories.
 
 ## Contributing
+Contributions are welcome! If you have any improvements or feature suggestions, please open an issue or submit a pull request.
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
-## Author
-
-Alish Bista
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
+## Liscense
+This project is licensed under the MIT License - see the [LICENSE]() file for details.
