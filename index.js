@@ -8,7 +8,7 @@ const helmet = require('helmet')
 const cors = require('cors');
 const xss = require('xss-clean');
 const rateLimiter = require('express-rate-limit')
-
+const authRoutes = require('./routes/auth');
 
 // ConnectDb
 const connectDB = require('./db/connect');
@@ -38,6 +38,8 @@ app.use(express.static(__dirname + "/public"));
 app.get('/', (req, res) => {
   res.send('Express boilerplate is successful');
 });
+
+app.use("/auth",authRoutes)
 
 
 
