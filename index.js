@@ -9,7 +9,8 @@ const cors = require('cors');
 const xss = require('xss-clean');
 const rateLimiter = require('express-rate-limit')
 const authRoutes = require('./routes/auth');
-
+const authMiddleware = require('./middlewares/authentication');
+const protectedRoutes = require('./routes/protectedRoutes');
 // ConnectDb
 const connectDB = require('./db/connect');
 const app = express();
@@ -40,7 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/auth",authRoutes)
-
+app.use('/user',authMiddleware,protectedRoutes)
 
 
 app.use(notFoundMiddleware);
