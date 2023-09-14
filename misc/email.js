@@ -24,4 +24,17 @@ module.exports = {
       console.error('Error sending verification email:', error);
     }
   },
+  sendResetPasswordEmail: async (email,token) => {
+    try {
+    const mailOptions = {
+      from: process.env.EMAIL_FROM,
+      to: email,
+      subject: 'Password Reset',
+      html: `Click <a href="${process.env.APP_URL}/auth/reset-password/${token}">here</a> to reset your password.`,
+    };
+    await transport.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error sending verification email:', error);
+  }
+  }
 };

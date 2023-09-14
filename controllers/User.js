@@ -1,7 +1,9 @@
 const User = require('../models/User');
+const PasswordReset = require('../models/passwordReset');
 const {StatusCodes} = require('http-status-codes');
 const {NotFoundError, UnauthenticatedError} = require('../errors/index');
-const {sendVerificationEmail} = require('../misc/email');
+const {sendVerificationEmail,sendResetPasswordEmail} = require('../misc/email');
+const { v4: uuidv4 } = require('uuid');
 
 
 
@@ -50,15 +52,6 @@ const verifyEmail = async (req,res) => {
         verificationToken: null
     })
     res.status(StatusCodes.OK).json({msg: "Email Verification True"})
-    // const token = req.params.token;
-    // const user = await User.findOne({verificationToken: token});
-    // if (!user) {
-    //     throw NotFoundError("Verification Failed")
-    // }
-    // user.isVerified = true;
-    // user.verificationToken = null;
-    // await user.save();
-    // res.json({ message: 'Email verification successful.' });
 }
 
 const handleChangePassword = async (req,res) =>{
@@ -80,9 +73,56 @@ const handleChangePassword = async (req,res) =>{
     res.status(StatusCodes.CREATED).json({msg: "Password Changed Successfully"})
 }
 
+const handleForgotPassword = async (req,res) => {
+    const { email } = req.body;
+    // Generate token
+    const user = await User.findOne({email})
+    if(!user){
+        throw new NotFoundError("Email Not found")
+    }
+    const passwordReset = await PasswordReset.findOne({email})
+    const resetToken = await uuidv4()
+    const expires = new Date(Date.now() + 3600000)
+    if(!passwordReset){
+        await PasswordReset.create({
+            email, token: resetToken, expires
+        })
+        await sendResetPasswordEmail(email,resetToken)
+        return res.status(StatusCodes.OK).json({ msg: 'Password reset Email sent.'}) 
+    }
+    passwordReset.token = resetToken
+    passwordReset.expires = expires
+    await passwordReset.save()
+    return res.status(StatusCodes.OK).json({msg: 'Password Reset Email'})
+    
+}
+
+const resetPassword = async (req,res) => {
+    const {token} = req.params;
+    const { newPassword,verifyPassword } = req.body
+    const resetToken = await PasswordReset.findOne({token})
+    if(!resetToken || resetToken.expires < Date.now()){
+        throw new NotFoundError("Invalid or expired token")
+    }
+    if(!newPassword || !verifyPassword ) {
+        throw new NotFoundError("newPassword or verifyPassword are missing")
+    }
+    if(newPassword !== verifyPassword){
+        throw new NotFoundError("newPassword and verifyPassword do not match")
+    }
+    const user = await User.findOne({email:resetToken.email})
+    user.password = newPassword
+    await user.save()
+    await PasswordReset.deleteOne({token})
+    res.status(StatusCodes.OK).json({msg: "Password Reset successful"})
+
+}
+
 module.exports  = {
     handleLogin,
     handleUserSignup,
     verifyEmail,
-    handleChangePassword
+    handleChangePassword,
+    handleForgotPassword,
+    resetPassword
 }
