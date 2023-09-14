@@ -118,7 +118,7 @@ const resetPassword = async (req,res) => {
     const user = await User.findOne({email:resetToken.email})
     user.password = newPassword
     await user.save()
-    await PasswordReset.deleteOne({token})
+    await PasswordReset.deleteOne({token:hashedToken})
     res.status(StatusCodes.OK).json({msg: "Password Reset successful"})
 
 }
