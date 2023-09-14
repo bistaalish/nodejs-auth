@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 
 var Schema = mongoose.Schema;
@@ -32,7 +33,7 @@ var UserSchema = new Schema({
 // hash password using bcrypt
 UserSchema.pre('save', async function () {
     const salt = await bcrypt.genSalt(10)
-    this.verificationToken =  uuidv4()
+    this.verificationToken =  crypto.randomBytes(32).toString('hex')
     this.password = await bcrypt.hash(this.password, salt)
   })
 

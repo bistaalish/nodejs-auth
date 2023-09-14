@@ -3,6 +3,8 @@ const PasswordReset = require('../models/passwordReset');
 const {StatusCodes} = require('http-status-codes');
 const {NotFoundError, UnauthenticatedError} = require('../errors/index');
 const {sendVerificationEmail,sendResetPasswordEmail} = require('../misc/email');
+const crypto = require('crypto');
+
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -81,11 +83,12 @@ const handleForgotPassword = async (req,res) => {
         throw new NotFoundError("Email Not found")
     }
     const passwordReset = await PasswordReset.findOne({email})
-    const resetToken = await uuidv4()
+    const resetToken = await crypto.randomBytes(32).toString('hex')
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     const expires = new Date(Date.now() + 3600000)
     if(!passwordReset){
         await PasswordReset.create({
-            email, token: resetToken, expires
+            email, token: hashedToken, expires
         })
         await sendResetPasswordEmail(email,resetToken)
         return res.status(StatusCodes.OK).json({ msg: 'Password reset Email sent.'}) 
@@ -93,14 +96,16 @@ const handleForgotPassword = async (req,res) => {
     passwordReset.token = resetToken
     passwordReset.expires = expires
     await passwordReset.save()
+    await sendResetPasswordEmail(email,resetToken)
     return res.status(StatusCodes.OK).json({msg: 'Password Reset Email'})
     
 }
 
 const resetPassword = async (req,res) => {
     const {token} = req.params;
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
     const { newPassword,verifyPassword } = req.body
-    const resetToken = await PasswordReset.findOne({token})
+    const resetToken = await PasswordReset.findOne({token:hashedToken})
     if(!resetToken || resetToken.expires < Date.now()){
         throw new NotFoundError("Invalid or expired token")
     }
