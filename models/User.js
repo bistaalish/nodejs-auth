@@ -45,6 +45,7 @@ UserSchema.methods.createJWT = function () {
         }
     )
 }
+
 // get Name
 UserSchema.methods.getName = function () {
     return this.name
