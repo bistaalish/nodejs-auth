@@ -10,7 +10,7 @@ const authMiddleware = async (req,res,next) => {
     try {
         const payload = jwt.verify(token,process.env.SECRET_KEY)
         // attach the users to the jov routes
-        req.user = {userId: payload.userId, name: payload.name}
+        req.user = {userId: payload.userId, name: payload.name,isVerified:payload.isVerified}
         next()
     } catch (error) {
         throw new UnauthenticatedError('Authentication Invalid')

@@ -5,14 +5,13 @@ const {NotFoundError, UnauthenticatedError} = require('../errors/index');
 const {sendVerificationEmail,sendResetPasswordEmail} = require('../misc/email');
 const crypto = require('crypto');
 
-const { v4: uuidv4 } = require('uuid');
-
 
 
 const handleUserSignup = async (req,res) => {
     const {name,email,password} = req.body
-    const user = await User.create({name,email,password})
-    const verificationToken = await user.getVerificationToken()
+    const verificationToken =  crypto.randomBytes(32).toString('hex')
+    const hashedToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+    const user = await User.create({name,email,password,verificationToken:hashedToken})
     console.log(verificationToken)
     await sendVerificationEmail(email,verificationToken)
     const token = user.createJWT()
@@ -49,7 +48,8 @@ const handleLogin = async (req,res) => {
 
 const verifyEmail = async (req,res) => {
     const token = req.params.token
-    const user = await User.findOneAndUpdate({verificationToken: token},{
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOneAndUpdate({verificationToken: hashedToken},{
         isVerified: true,
         verificationToken: null
     })

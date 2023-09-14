@@ -17,7 +17,7 @@ module.exports = {
         from: process.env.EMAIL_FROM,
         to: email,
         subject: 'Account Verification',
-        html: `Please click <a href="${process.env.APP_URL}/user/verify/${verificationToken}">here</a> to verify your email.`,
+        html: `Please click <a href="${process.env.APP_URL}/auth/verify/${verificationToken}">here</a> to verify your email.`,
       };
       await transport.sendMail(mailOptions);
     } catch (error) {
@@ -30,7 +30,7 @@ module.exports = {
       from: process.env.EMAIL_FROM,
       to: email,
       subject: 'Password Reset',
-      html: `Click <a href="${process.env.APP_URL}/auth/reset-password/${token}">here</a> to reset your password.`,
+      html: `Click <a href="${process.env.APP_URL}/auth/forgot-password/${token}">here</a> to reset your password.`,
     };
     await transport.sendMail(mailOptions);
   } catch (error) {

@@ -9,6 +9,5 @@ protectedRoutes.get("/profile",(req,res) => {
 protectedRoutes.post('/change-password',handleChangePassword)
 
 
-protectedRoutes.get('/verify/:token',verifyEmail)
 
 module.exports = protectedRoutes

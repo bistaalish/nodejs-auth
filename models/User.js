@@ -33,14 +33,13 @@ var UserSchema = new Schema({
 // hash password using bcrypt
 UserSchema.pre('save', async function () {
     const salt = await bcrypt.genSalt(10)
-    this.verificationToken =  crypto.randomBytes(32).toString('hex')
     this.password = await bcrypt.hash(this.password, salt)
   })
 
 // Create JSON web token
 UserSchema.methods.createJWT = function () {
     return jwt.sign(
-        {userId: this._id, name: this.name},
+        {userId: this._id, name: this.name,isVerified: this.isVerified},
         process.env.SECRET_KEY,{
             expiresIn: process.env.JWT_LIFETIME
         }
