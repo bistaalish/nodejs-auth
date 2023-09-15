@@ -10,7 +10,7 @@ const xss = require('xss-clean');
 const rateLimiter = require('express-rate-limit')
 const authRoutes = require('./routes/auth');
 const authMiddleware = require('./middlewares/authentication');
-const protectedRoutes = require('./routes/protectedRoutes');
+const profile = require('./routes/profile');
 
 // ConnectDb
 const connectDB = require('./db/connect');
@@ -42,8 +42,8 @@ app.get('/', (req, res) => {
   res.send('Express boilerplate is successful');
 });
 
-app.use("/auth",authRoutes)
-app.use('/user',authMiddleware,protectedRoutes)
+app.use("/api",authRoutes)
+app.use('/api/user',authMiddleware,profile)
 
 
 app.use(notFoundMiddleware);

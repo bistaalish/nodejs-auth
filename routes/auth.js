@@ -19,7 +19,7 @@ const limiter = rateLimit({
   });
 
 router.post("/login",handleLogin)
-router.post("/signup",handleUserSignup)
+router.post("/register",handleUserSignup)
 router.post("/forgot-password", limiter ,handleForgotPassword)
 router.post("/forgot-password/:token", resetPassword)
 router.get('/verify/:token',verifyEmail)

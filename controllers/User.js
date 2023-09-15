@@ -5,7 +5,9 @@ const {NotFoundError, UnauthenticatedError} = require('../errors/index');
 const {sendVerificationEmail,sendResetPasswordEmail} = require('../misc/email');
 const crypto = require('crypto');
 
-
+/* 
+User Registration and Authentication Controller
+*/
 
 const handleUserSignup = async (req,res) => {
     const {name,email,password} = req.body
@@ -46,6 +48,10 @@ const handleLogin = async (req,res) => {
 
 }
 
+/* 
+Password Reset and Email Management
+*/
+
 const verifyEmail = async (req,res) => {
     const token = req.params.token
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
@@ -56,24 +62,7 @@ const verifyEmail = async (req,res) => {
     res.status(StatusCodes.OK).json({msg: "Email Verification True"})
 }
 
-const handleChangePassword = async (req,res) =>{
-    const id = req.user.userId
-    const {currentPassword,newPassword,verificationPassword} = req.body
-    if (!currentPassword || !newPassword || !verificationPassword ){
-        throw new NotFoundError("Missing currentPassword or newPassword or verificationPassword")
-    }
-    if (newPassword !== verificationPassword) {
-        throw new NotFoundError("newPassword and verificationPassword do not match")
-    }
-    const user = await User.findById(id)
-    const isPasswordCorrect = await user.comparePassword(currentPassword)
-    if (!isPasswordCorrect) {
-        throw new UnauthenticatedError("Invalid Current Password")
-    }
-    user.password = newPassword;
-    user.save()
-    res.status(StatusCodes.CREATED).json({msg: "Password Changed Successfully"})
-}
+
 
 const handleForgotPassword = async (req,res) => {
     const { email } = req.body;
@@ -127,7 +116,6 @@ module.exports  = {
     handleLogin,
     handleUserSignup,
     verifyEmail,
-    handleChangePassword,
     handleForgotPassword,
     resetPassword
 }
