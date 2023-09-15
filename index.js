@@ -23,7 +23,8 @@ const errorHandlerMiddleware = require('./middlewares/error-handler');
 app.set('trust proxy', 1);
 app.use(rateLimiter({
   windowMs: 15 * 60 * 1000,
-  max: 100
+  max: 100,
+  message: 'Too many password reset requests from this IP, please try again later.'
 }))
 app.use(session({ secret: process.env.SECRET_KEY , resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
