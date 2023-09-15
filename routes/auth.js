@@ -7,7 +7,16 @@ POST /forgot-password/:token -> Reset link
 GET /verify/:token -> verify user email
 */
 const express = require('express');
-const {handleLogin,handleUserSignup,handleForgotPassword,resetPassword,verifyEmail} = require('../controllers/User');
+const authMiddleware = require('../middlewares/authentication');
+
+const {handleLogin,
+    handleUserSignup,
+    handleForgotPassword,
+    resetPassword,
+    verifyEmail,
+    handlelogout,
+    handleRefreshToken
+} = require('../controllers/User');
 const router = express.Router();
 const rateLimit = require('express-rate-limit');
 
@@ -19,10 +28,13 @@ const limiter = rateLimit({
   });
 
 router.post("/login",handleLogin)
+router.post("/logout",handlelogout)
 router.post("/register",handleUserSignup)
 router.post("/forgot-password", limiter ,handleForgotPassword)
 router.post("/forgot-password/:token", resetPassword)
 router.get('/verify/:token',verifyEmail)
+router.post("/refresh-token",authMiddleware,handleRefreshToken)
+
 
 
 module.exports = router

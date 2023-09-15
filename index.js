@@ -10,6 +10,7 @@ const xss = require('xss-clean');
 const rateLimiter = require('express-rate-limit')
 const authRoutes = require('./routes/auth');
 const authMiddleware = require('./middlewares/authentication');
+const verified = require('./middlewares/verified');
 const profile = require('./routes/profile');
 
 // ConnectDb
@@ -43,7 +44,7 @@ app.get('/', (req, res) => {
 });
 
 app.use("/api",authRoutes)
-app.use('/api/user',authMiddleware,profile)
+app.use('/api/user',verified,profile)
 
 
 app.use(notFoundMiddleware);

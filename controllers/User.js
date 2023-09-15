@@ -21,7 +21,12 @@ const handleUserSignup = async (req,res) => {
     res.status(StatusCodes.CREATED).json(response)    
 }
 
+const handlelogout = async (req,res) => {
+  // This is a stateless API, so you don't need to invalidate tokens server-side.
+  // Instead, simply instruct the client to discard the token.
 
+  res.json({ message: 'Logged out successfully' });
+}
 
 const handleLogin = async (req,res) => {
     const {email,password} = req.body
@@ -46,6 +51,18 @@ const handleLogin = async (req,res) => {
         token
     }) 
 
+}
+
+const handleRefreshToken = async (req,res) => {
+    // Generate new Token
+    const user = await User.findById(req.user.userId)
+    const newToken = user.createJWT()
+    res.status(StatusCodes.OK).json({
+        user: {
+            name: user.getName()
+        },
+        token:newToken
+    }) 
 }
 
 /* 
@@ -117,5 +134,7 @@ module.exports  = {
     handleUserSignup,
     verifyEmail,
     handleForgotPassword,
-    resetPassword
+    resetPassword,
+    handlelogout,
+    handleRefreshToken
 }
